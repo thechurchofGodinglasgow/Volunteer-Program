@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Volunteer Application 義工申請表</title>
+<style>
+  :root{
+    --brand:#1e88e5; --ink:#0f172a; --muted:#5e6a74; --line:#e6e6e6; --bg:#fff; --req:#d32f2f;
+    --card-pad:24px; --radius:14px;
+  }
+  *{box-sizing:border-box}
+  /* 1) solid Chinese/English font stack on body */
+  body{
+  font-family: system-ui, -apple-system, Segoe UI, Roboto,
+               "Noto Sans", "Noto Sans TC", "Microsoft JhengHei", "PingFang TC",
+               Arial, sans-serif;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* 2) make ALL controls inherit the body font */
+input, textarea, select, button,
+input::placeholder, textarea::placeholder,
+input[type="file"]::file-selector-button {
+  font-family: inherit !important;
+  font-size: inherit !important;
+  line-height: inherit !important;
+  letter-spacing: inherit !important;
+  color: inherit;
+}
+  .wrap{max-width:980px;margin:48px auto;padding:0 22px}
+  header{margin-bottom:16px}
+  h1{font-size:28px;line-height:1.2;margin:0 0 6px}
+  .sub{color:var(--muted);margin:0 0 22px}
+
+  /* card/form */
+  form{
+    background:var(--bg); border:1px solid var(--line); border-radius:var(--radius);
+    padding:var(--card-pad); box-shadow:0 6px 18px rgba(20,35,60,.06);
+  }
+  .section{
+    padding:12px 0 6px; margin:16px 0 8px; border-top:1px solid var(--line);
+  }
+  .section:first-of-type{border-top:0;margin-top:0;padding-top:0}
+  .section-title{font-weight:800; letter-spacing:.2px; margin:0 0 12px; color:#0f172a}
+
+  /* layout helpers */
+  .grid{display:grid; gap:18px 18px}
+  .grid.col-2{grid-template-columns:1fr 1fr}
+  .group{margin-bottom:16px}  /* gentle spacing under blocks */
+
+  /* fields */
+  .row{display:flex;flex-direction:column;gap:8px}
+  .row.oneline{display:grid; grid-template-columns:260px 1fr; gap:10px; align-items:center}
+  label{font-weight:650}
+  .req::after{content:" *"; color:var(--req)}
+  .hint{color:var(--muted); font-size:12px}
+
+  /* inputs */
+  input[type="text"],input[type="email"],input[type="tel"],textarea,select{
+    border:1px solid var(--line); background:#fff; width:100%;
+    border-radius:10px; padding:12px 14px; 
+    /* keep 16px on phones to avoid iOS zoom, but still “inherit” on desktop */
+  font-size: clamp(14px, 1rem, 16px);
+  transition:border-color .16s ease, box-shadow .16s ease, background-color .16s ease;
+  -webkit-appearance: none;
+  appearance: none;
+  }
+
+  /* placeholder text also matches */
+input::placeholder,
+textarea::placeholder {
+  font: inherit;
+  color: var(--muted);
+  opacity: 1;
+}
+
+  textarea{min-height:92px; resize:vertical}
+  input:focus,textarea:focus,select:focus{outline:none; border-color:var(--brand); box-shadow:0 0 0 3px rgba(30,136,229,.16)}
+  .is-invalid{border-color:#e11d48 !important; box-shadow:0 0 0 3px rgba(225,29,72,.15) !important}
+
+  /* checklist */
+  .checklist{
+    display:grid; grid-template-columns:repeat(3, minmax(220px,1fr)); gap:12px 18px;
+    padding:6px 4px 0; margin-top:2px;
+  }
+  .checklist label{display:flex; align-items:flex-start; gap:10px; line-height:1.35; padding:8px 10px; border-radius:10px}
+  .checklist input[type="checkbox"]{margin-top:2px}
+
+  /* inline radios */
+  .inline{display:flex;gap:18px;flex-wrap:wrap;align-items:center}
+
+  /* actions */
+  .actions{display:flex;gap:12px;align-items:center;margin-top:22px;flex-wrap:wrap}
+  button{appearance:none;border:0;border-radius:12px;padding:12px 18px;font-weight:800;cursor:pointer}
+  .primary{background:var(--brand);color:#fff}
+  .ghost{background:#eef5fe;color:#0d47a1}
+  .ok{color:#166534;font-weight:700}
+  .err{color:#b91c1c;font-weight:700}
+
+  .divider{height:1px;background:var(--line);margin:18px 0}
+
+  /* responsive */
+  @media (max-width:900px){.wrap{margin:36px auto}}
+  @media (max-width:760px){
+    .grid.col-2{grid-template-columns:1fr}
+    .row.oneline{grid-template-columns:1fr}
+    .checklist{grid-template-columns:repeat(2,minmax(180px,1fr))}
+  }
+  @media (max-width:480px){
+    form{padding:18px}
+    .checklist{grid-template-columns:1fr}
+    /* prevent iOS zoom */
+    input[type="text"],input[type="email"],input[type="tel"],textarea,select{font-size:16px}
+    .actions{flex-direction:column;align-items:stretch}
+    .actions button{width:100%}
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>The Churches of God in UK – Volunteer Application Form<br>義工申請表</h1>
+      <p class="sub">Please complete the form below. 請完整填寫以下表單。</p>
+    </header>
+
+    <form id="volForm" novalidate>
+      <!-- PERSONAL DETAILS -->
+      <section class="section">
+        <h2 class="section-title">PERSONAL DETAILS 個人資料</h2>
+
+        <div class="grid col-2 group">
+          <div class="row">
+            <label class="req" for="surname">Surname（姓氏）</label>
+            <input type="text" id="surname" name="surname" required>
+          </div>
+          <div class="row">
+            <label class="req" for="forenames">Forenames（名字）</label>
+            <input type="text" id="forenames" name="forenames" required>
+          </div>
+        </div>
+
+        <div class="row group">
+          <label for="address">Address（地址）</label>
+          <textarea id="address" name="address" rows="3"></textarea>
+        </div>
+
+        <div class="grid col-2 group">
+          <div class="row oneline">
+            <label class="req" for="email">Email address（電郵）</label>
+            <input type="email" id="email" name="email" required autocomplete="email" placeholder="name@example.com">
+          </div>
+          <div class="row oneline">
+            <label for="mobile">Mobile number（手機）</label>
+            <input
+              type="tel"
+              id="mobile"
+              name="mobile"
+              placeholder="07xxxxxxxxx 或 +44 7xxxx xxxxx"
+              inputmode="numeric"
+              autocomplete="tel"
+              pattern="^(\+44\s?7\d{3}|\(?07\d{3}\)?)\s?\d{3}\s?\d{3}$"
+              title="UK mobile only: 07xxxxxxxxx 或 +44 7xxxx xxxxx">
+          </div>
+        </div>
+
+        <div class="grid col-2 group">
+          <div class="row oneline">
+            <label for="religion">Religious beliefs（宗教信仰）</label>
+            <input type="text" id="religion" name="religious_beliefs">
+          </div>
+          <div class="row oneline">
+            <label for="emergency">Emergency number / contact person（緊急聯絡人/電話）</label>
+            <input type="text" id="emergency" name="emergency_contact" placeholder="Name & Phone 姓名與電話">
+          </div>
+        </div>
+
+        <div class="row">
+          <label class="req" for="where">Where did you hear about our volunteering programme?（你是如何得知本義工計劃？）</label>
+          <input type="text" id="where" name="where_heard" required placeholder="e.g. Friend, Church, Social Media 朋友／教會／社交媒體">
+        </div>
+      </section>
+
+      <!-- SKILLS -->
+      <section class="section">
+        <h2 class="section-title">
+          Your Skills and Interests 技能與興趣
+          <span class="hint">（*至少勾選一項）</span>
+        </h2>
+
+        <div class="checklist">
+          <label><input type="checkbox" name="skills" value="Teaching Chinese"> Teaching Chinese（中文教學）</label>
+          <label><input type="checkbox" name="skills" value="Teaching English"> Teaching English（英文教學）</label>
+          <label><input type="checkbox" name="skills" value="Teaching Maths"> Teaching Maths（數學教學）</label>
+          <label><input type="checkbox" name="skills" value="Life Skills/Budgeting"> Life skills / Budgeting（生活技能／預算）</label>
+          <label><input type="checkbox" name="skills" value="Admin/Clerical"> Admin / Clerical（行政／文書）</label>
+          <label><input type="checkbox" name="skills" value="Arts and Crafts"> Arts and Crafts（美術手作）</label>
+          <label><input type="checkbox" name="skills" value="Car Owner/Driver"> Car Owner / Driver（車主／司機）</label>
+          <label><input type="checkbox" name="skills" value="Computer Skills"> Computer Skills（電腦技能）</label>
+          <label><input type="checkbox" name="skills" value="Form Filling/CV Writing"> Form Filling, CV writing（填表／履歷）</label>
+          <label><input type="checkbox" name="skills" value="Youth Work"> Youth Work（青少年工作）</label>
+          <label><input type="checkbox" name="skills" value="Listening/Befriending"> Listening / Befriending（傾聽／陪伴）</label>
+          <label><input type="checkbox" name="skills" value="Emotional Support/Counselling"> Emotional Support / Counselling（情緒支援／輔導）</label>
+          <label><input type="checkbox" name="skills" value="Hosting / Performing"> Hosting / Performing（主持／表演）</label>
+          <label><input type="checkbox" name="skills" value="Drama / Music"> Drama / Music（畫劇／音樂）</label>
+          <label><input type="checkbox" name="skills" value="Cooking / Food Making"> Cooking / Food Making（美食製作）</label>
+          
+          <label style="grid-column:1/-1">
+            <input type="checkbox" name="skills" value="Other" id="chkOther">
+            Other（其他）— Please specify 請註明：
+            <input type="text" id="skillOther" name="skill_other" placeholder="其他技能…" style="margin-left:8px;max-width:320px;">
+          </label>
+        </div>
+      </section>
+
+      <!-- OPEN QUESTIONS -->
+      <section class="section">
+        <h2 class="section-title">Open Questions 開放式問題</h2>
+        <div class="row"><label class="req" for="exp">Experience as a Volunteer（義工服務經驗）</label><textarea id="exp" name="experience" required></textarea></div>
+        <div class="row"><label class="req" for="courses">Courses or Training（相關課程/訓練）</label><textarea id="courses" name="courses" required></textarea></div>
+        <div class="row"><label for="hobbies">Hobbies / Interests（嗜好／興趣）</label><textarea id="hobbies" name="hobbies"></textarea></div>
+        <div class="row"><label class="req" for="why">Why would you like to be our volunteer?（為何想加入？）</label><textarea id="why" name="why_volunteer" required></textarea></div>
+        <div class="row"><label class="req" for="gain">What do you want to gain from this experience?（希望獲得什麼？）</label><textarea id="gain" name="what_to_gain" required></textarea></div>
+      </section>
+
+      <!-- SAFEGUARDING -->
+      <section class="section">
+        <h2 class="section-title">Safeguarding 安全與守則</h2>
+        <div class="row">
+          <label class="req">Do you have any Criminal Convictions?（是否有刑事定罪？）</label>
+          <div class="inline">
+            <label><input type="radio" name="criminal_convictions" value="No" checked> No（否）</label>
+            <label><input type="radio" name="criminal_convictions" value="Yes"> Yes（是）</label>
+          </div>
+        </div>
+        <div class="row" id="convictionDetailsRow" style="display:none">
+          <label class="req" for="conviction_details">If yes, please state the date and nature of conviction.（若有，請填寫日期與性質）</label>
+          <textarea id="conviction_details" name="conviction_details"></textarea>
+        </div>
+        <div class="row">
+          <label for="special">Do you have any special requirements?（是否有需要特別留意的情況？）</label>
+          <textarea id="special" name="special_requirements" placeholder="例如：可接收的工作時段、健康考量、無障礙需求等"></textarea>
+        </div>
+        <div class="divider"></div>
+        <label><input type="checkbox" id="consent"> I consent to the collection and use of my data for volunteering purposes.（我同意為義工申請所需之資料蒐集與使用）</label>
+        <p class="hint">Your information will be handled responsibly and confidentially. 我們會負責任且保密地處理你的資料。</p>
+      </section>
+
+      <div class="actions">
+        <button type="submit" class="primary">Submit 提交</button>
+        <button type="reset" class="ghost">Reset 重設</button>
+        <span id="msg"></span>
+      </div>
+
+      <!-- 蜜罐 -->
+      <input type="text" name="website" id="hp" style="position:absolute;left:-9999px" tabindex="-1" autocomplete="off">
+    </form>
+  </div>
+
+<script>
+  // ==== CONFIG: replace with your Apps Script Web App URL (must end with /exec) ====
+  const FORM_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxgrt-NbB85gvmfdGPKts-O5UEKQh_R31Posr-hgGD2RinR2g2dwDe2HQw_Hq5SsQWfIg/exec';
+
+  const form = document.getElementById('volForm');
+  const msg = document.getElementById('msg');
+  const consent = document.getElementById('consent');
+  const hp = document.getElementById('hp');
+  const convictionRow = document.getElementById('convictionDetailsRow');
+  const radios = document.querySelectorAll('input[name="criminal_convictions"]');
+
+  // Toggle conviction details block
+  radios.forEach(r => r.addEventListener('change', () => {
+    const v = document.querySelector('input[name="criminal_convictions"]:checked').value;
+    convictionRow.style.display = (v === 'Yes') ? 'block' : 'none';
+  }));
+
+  // Skills "Other" toggle
+  const chkOther = document.getElementById('chkOther');
+  const inputOther = document.getElementById('skillOther');
+  const toggleOther = () => inputOther.disabled = !chkOther.checked;
+  toggleOther(); chkOther.addEventListener('change', toggleOther);
+
+  // --- UK mobile helpers ---
+  function normalizeUkMobile(v) {
+    if (!v) return '';
+    let s = v.replace(/\s|-/g, '');
+    if (s.startsWith('+44')) s = '0' + s.slice(3);
+    if (s.startsWith('44'))  s = '0' + s.slice(2);
+    return s;
+  }
+  function isValidUkMobile(v) {
+    const s = normalizeUkMobile(v);
+    return /^07\d{9}$/.test(s); // 07 + 9 digits (11 total)
+  }
+
+  function markInvalid(el, invalid) {
+    if (!el) return;
+    if (invalid) el.classList.add('is-invalid'); else el.classList.remove('is-invalid');
+  }
+
+  // Reset UI fully
+  form.addEventListener('reset', () => {
+    setTimeout(() => {
+      toggleOther();
+      convictionRow.style.display='none';
+      msg.textContent = '';
+      // remove invalid highlights
+      Array.from(form.querySelectorAll('.is-invalid')).forEach(el => el.classList.remove('is-invalid'));
+    }, 0);
+  });
+
+  // Submit handler
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault(); msg.textContent = '';
+
+    // clear invalid states
+    Array.from(form.querySelectorAll('.is-invalid')).forEach(el => el.classList.remove('is-invalid'));
+
+    // Required fields
+    const requiredNames = ['surname','forenames','email','where_heard','experience','courses','why_volunteer','what_to_gain'];
+    for (const n of requiredNames) {
+      const el = form.elements[n];
+      if (!el || !el.value.trim()) {
+        markInvalid(el, true);
+        msg.innerHTML = '<span class="err">請完整填寫必填欄位（*）。</span>';
+        el?.focus();
+        return;
+      }
+    }
+
+    // At least one skill
+    if (![...form.querySelectorAll('input[name="skills"]:checked')].length){
+      msg.innerHTML = '<span class="err">請至少勾選一項技能。</span>';
+      return;
+    }
+
+    // Conviction details if Yes
+    const cv = form.querySelector('input[name="criminal_convictions"]:checked')?.value || 'No';
+    if (cv === 'Yes') {
+      const det = form.elements['conviction_details']?.value.trim();
+      if (!det) {
+        markInvalid(form.elements['conviction_details'], true);
+        msg.innerHTML = '<span class="err">請填寫定罪詳情。</span>';
+        form.elements['conviction_details'].focus();
+        return;
+      }
+    }
+
+    // Consent
+    if (!consent.checked){
+      msg.innerHTML = '<span class="err">請勾選同意資料使用聲明。</span>';
+      return;
+    }
+
+    // Honey pot
+    if (hp.value){ msg.innerHTML = '<span class="ok">Submitted.</span>'; return; }
+
+    // Validate & normalize UK mobile (optional field)
+    const mobileEl = form.elements['mobile'];
+    if (mobileEl && mobileEl.value.trim()) {
+      if (!isValidUkMobile(mobileEl.value)) {
+        markInvalid(mobileEl, true);
+        msg.innerHTML = '<span class="err">請輸入有效的英國手機號碼（07 開頭，11位）或 +44 7… 格式。</span>';
+        mobileEl.focus();
+        return;
+      }
+      // write normalized 07xxxxxxxxx back so it's what we submit
+      mobileEl.value = normalizeUkMobile(mobileEl.value);
+    }
+
+    // Append "Other" skill text as an extra 'skills' value
+    if (chkOther.checked && inputOther.value.trim()){
+      const h = document.createElement('input');
+      h.type='hidden'; h.name='skills'; h.value=inputOther.value.trim();
+      form.appendChild(h);
+    }
+
+    msg.textContent = 'Submitting… 正在提交…';
+
+    try{
+      const fd = new FormData(form);
+      const res = await fetch(FORM_ENDPOINT, { method:'POST', body:fd });
+      if (res.ok){
+        msg.innerHTML = '<span class="ok">提交成功！Thank you for applying.</span>';
+        form.reset(); toggleOther(); convictionRow.style.display='none';
+      }else{
+        msg.innerHTML = '<span class="err">提交失敗（伺服器）。請稍後重試。</span>';
+      }
+    }catch(err){
+      console.error(err);
+      msg.innerHTML = '<span class="err">提交失敗（網路）。請檢查連線後再試。</span>';
+    }
+  });
+</script>
+</body>
+</html>
