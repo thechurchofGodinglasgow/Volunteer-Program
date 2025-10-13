@@ -9,6 +9,58 @@
     --brand:#1e88e5; --ink:#0f172a; --muted:#5e6a74; --line:#e6e6e6; --bg:#fff; --req:#d32f2f;
     --card-pad:24px; --radius:14px;
   }
+
+  /* ===== Brand bar (compact: logo + charity no + form tag) ===== */
+.brandbar{
+  background:#10a3ea;   /* brand blue */
+  color:#fff;
+  padding:18px 0;       /* vertical breathing space */
+  margin-bottom:18px;
+}
+
+/* keep overall page container */
+.brandbar .wrap{padding-left:24px;padding-right:24px}
+
+/* layout */
+.brand{
+  display:flex; align-items:flex-start; gap:16px;
+}
+
+/* bigger logo */
+.brand__logo{
+  height:64px; width:auto; display:block; flex-shrink:0;
+  filter: drop-shadow(0 1px 1px rgba(0,0,0,.12));
+  margin-left:2px; /* slight visual centering */
+}
+
+/* text stack: charity no + form tag */
+.brand__stack{ display:flex; flex-direction:column; gap:4px; margin-top:4px }
+
+/* magnified charity number */
+.charity{
+  font-size:22px; line-height:1.2; font-weight:800; color:#ffffff;
+  letter-spacing:.2px;
+}
+.charity strong{ font-weight:900 }
+
+/* keep the bilingual form label below charity no. */
+.brand__formtag{
+  font-size:15px; line-height:1.35; color:#f2fafe; opacity:.95;
+}
+
+/* remove any old brand title block if it still exists */
+.brand__titles, .brand__name, .brand__tag{ display:none !important; }
+
+/* responsive tweaks */
+@media (max-width:720px){
+  .brand{ gap:12px }
+  .brand__logo{ height:48px }
+  .charity{ font-size:18px }
+  .brand__formtag{ font-size:14px }
+  .brandbar .wrap{ padding-left:18px; padding-right:18px }
+}
+
+
   *{box-sizing:border-box}
   /* 1) solid Chinese/English font stack on body */
   body{
@@ -119,10 +171,16 @@ textarea::placeholder {
 </head>
 <body>
   <div class="wrap">
-    <header>
-      <h1>The Churches of God in UK – Volunteer Application Form<br>義工申請表</h1>
-      <p class="sub">Please complete the form below. 請完整填寫以下表單。</p>
-    </header>
+    <header class="brandbar">
+  <div class="wrap brand brand--compact">
+    <img src="logo.png" alt="The Churches of God in UK Logo" class="brand__logo" />
+    <div class="brand__stack">
+      <div class="charity">Charity No: <strong>298835</strong></div>
+      <div class="brand__formtag">義工申請表 Volunteer Application Form</div>
+    </div>
+  </div>
+</header>
+
 
     <form id="volForm" novalidate>
       <!-- PERSONAL DETAILS -->
